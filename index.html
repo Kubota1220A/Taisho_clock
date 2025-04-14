@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My 大正時計</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Optional: Basic styling for the clock */
+        #clock {
+            font-size: 3em;
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>大正時計</h1>
+    <div id="clock"></div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const year = now.getFullYear() - 1911; // Convert to Taisho year
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(now.getDate()).padStart(2, '0');
+            const taishoDate = `${year}年${month}月${day}日`;
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `大正${year}年${month}月${day}日${hours}時${minutes}分${seconds}秒`;
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        // Update the clock immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
