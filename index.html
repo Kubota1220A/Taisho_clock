@@ -5,21 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大正時計</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
     <style>
-        #clock {
-            font-size: 3em;
-            font-family: sans-serif;
+        body {
+            background: #f7f4f1;
+            margin: 0;
+            padding: 0;
+        }
+        .clock-outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .clock-main {
+            padding: 36px 0 28px 0;
+            min-width: 320px;
+            max-width: 96vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            background: none;
+            border: none;
+            box-shadow: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .clock-row {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+        }
+        .clock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f9f6f3;
+            border-radius: 12px;
+            border: 1.5px solid #a8776d55;
+            min-width: 60px;
+            padding: 10px 8px 6px 8px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5em;
+            color: #3e343f;
+            box-shadow: 0 2px 8px #a8776d11;
+        }
+        .clock-label {
+            font-size: 0.7em;
+            color: #a8776d;
+            margin-top: 2px;
+            letter-spacing: 0.1em;
+        }
+        .clock-era {
+            font-size: 1.1em;
+            color: #a8776d;
+            margin-bottom: 8px;
+            letter-spacing: 0.12em;
+            display: none;
+        }
+        h1 {
             text-align: center;
-            margin-top: 20px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 2.2em;
+            margin-bottom: 24px;
+            color: #3e343f;
+            letter-spacing: 0.13em;
+            text-shadow: 0 2px 8px #fff8, 0 1px 0 #a8776d33;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @media (max-width: 600px) {
+            .clock-main {
+                padding: 12px 2vw 8px 2vw;
+                min-width: 0;
+                max-width: 100vw;
+            }
+            .clock-row {
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .clock-item {
+                font-size: 1em;
+                min-width: 38px;
+                padding: 6px 2px 2px 2px;
+            }
+            h1 {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+            }
         }
         /* 5/14用の背景 */
         body.art-bg {
             background:
-                linear-gradient(to right, #a6b2ad 0 50%, #d7cdc4 0 100%) top/100% 100% no-repeat,
-                none;
-            position: relative;
+                linear-gradient(to right, #a6b2ad 0%, #a6b2ad 50%, #d7cdc4 50%, #d7cdc4 100%) no-repeat fixed;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
             min-height: 100vh;
             overflow: hidden;
+            z-index: -2;
         }
         body.art-bg::before {
             content: "";
@@ -30,7 +120,7 @@
             height: 50vh;
             background: #3e343f;
             clip-path: polygon(0 100%, 0 40%, 50% 0, 100% 40%, 100% 100%);
-            z-index: 0;
+            z-index: -2;
             pointer-events: none;
         }
         body.art-bg::after {
@@ -43,29 +133,44 @@
             height: 180px;
             background: #a8776d;
             border-radius: 50%;
-            z-index: 1;
+            z-index: -1;
             pointer-events: none;
         }
     </style>
 </head>
 <body>
     <h1>大正時計</h1>
-    <div id="clock"></div>
+    <div class="clock-main">
+        <div class="clock-row">
+            <div class="clock-item"><span id="clock-year"></span><span class="clock-label">年</span></div>
+            <div class="clock-item"><span id="clock-month"></span><span class="clock-label">月</span></div>
+            <div class="clock-item"><span id="clock-day"></span><span class="clock-label">日</span></div>
+        </div>
+        <div class="clock-row">
+            <div class="clock-item"><span id="clock-hour"></span><span class="clock-label">時</span></div>
+            <div class="clock-item"><span id="clock-minute"></span><span class="clock-label">分</span></div>
+            <div class="clock-item"><span id="clock-second"></span><span class="clock-label">秒</span></div>
+        </div>
+    </div>
+    <div id="clock" style="display:none;"></div>
 
     <script>
         function updateClock() {
             const now = new Date();
-            const year = now.getFullYear() - 1911; // Convert to Taisho year
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const year = now.getFullYear() - 1911;
+            const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `大正${year}年${month}月${day}日${hours}時${minutes}分${seconds}秒`;
-            document.getElementById('clock').textContent = timeString;
-
+            document.getElementById('clock-year').textContent = year;
+            document.getElementById('clock-month').textContent = month;
+            document.getElementById('clock-day').textContent = day;
+            document.getElementById('clock-hour').textContent = hours;
+            document.getElementById('clock-minute').textContent = minutes;
+            document.getElementById('clock-second').textContent = seconds;
             // 5/14だけ背景を切り替え
-            if (now.getMonth() === 4 && now.getDate() === 14) { // 5月は0-indexedで4
+            if (now.getMonth() === 4 && now.getDate() === 13) {
                 document.body.classList.add('art-bg');
             } else {
                 document.body.classList.remove('art-bg');
