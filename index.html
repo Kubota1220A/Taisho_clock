@@ -6,12 +6,45 @@
     <title>大正時計</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Optional: Basic styling for the clock */
         #clock {
             font-size: 3em;
             font-family: sans-serif;
             text-align: center;
             margin-top: 20px;
+        }
+        /* 5/14用の背景 */
+        body.art-bg {
+            background:
+                linear-gradient(to right, #a6b2ad 0 50%, #d7cdc4 0 100%) top/100% 100% no-repeat,
+                none;
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        body.art-bg::before {
+            content: "";
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 50vh;
+            background: #3e343f;
+            clip-path: polygon(0 100%, 0 40%, 50% 0, 100% 40%, 100% 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        body.art-bg::after {
+            content: "";
+            position: fixed;
+            left: 50%;
+            top: 38%;
+            transform: translate(-50%, 0);
+            width: 180px;
+            height: 180px;
+            background: #a8776d;
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -25,15 +58,20 @@
             const year = now.getFullYear() - 1911; // Convert to Taisho year
             const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
             const day = String(now.getDate()).padStart(2, '0');
-            const taishoDate = `${year}年${month}月${day}日`;
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             const timeString = `大正${year}年${month}月${day}日${hours}時${minutes}分${seconds}秒`;
             document.getElementById('clock').textContent = timeString;
+
+            // 5/14だけ背景を切り替え
+            if (now.getMonth() === 4 && now.getDate() === 14) { // 5月は0-indexedで4
+                document.body.classList.add('art-bg');
+            } else {
+                document.body.classList.remove('art-bg');
+            }
         }
 
-        // Update the clock immediately and then every second
         updateClock();
         setInterval(updateClock, 1000);
     </script>
